@@ -2,32 +2,35 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>定期動画再生</title>
+  <title>音あり自動再生 - GitHub Pages対応</title>
   <style>
-    body { display: flex; justify-content: center; align-items: center; height: 100vh; }
-    video { width: 80%; height: auto; display: none; }
+    body { display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f0f0f0; }
+    video { width: 80%; height: auto; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
   </style>
 </head>
 <body>
 
-<video id="video" src="Benkyo_Shite.mp4"></video>
+<video id="video" src="Benkyo_Shite.mp4" autoplay playsinline></video>
 
 <script>
   const video = document.getElementById("video");
-  const interval = 60000; // ミリ秒単位（60秒）
+  const interval = 60000; // 60秒ごとに再生
 
-  function playVideo() {
-    video.style.display = "block";      // 動画表示
-    video.play();                       // 再生開始
+  function tryPlay() {
+    video.play().catch(err => {
+      console.warn("自動再生がブロックされました:", err);
+    });
   }
 
   video.addEventListener('ended', () => {
-    video.style.display = "none";       // 再生終了後に非表示
-    setTimeout(playVideo, interval);    // 指定間隔後に再生再開
+    video.style.display = "none";  
+    setTimeout(() => {
+      video.style.display = "block";
+      tryPlay();
+    }, interval);
   });
 
-  // ページ読み込み時に初回再生
-  window.onload = playVideo;
+  window.onload = tryPlay;  // ページ読み込み時に再生試行
 </script>
 
 </body>
